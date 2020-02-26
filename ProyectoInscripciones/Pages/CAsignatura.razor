@@ -1,0 +1,52 @@
+﻿@page "/casignatura"
+@using ProyectoInscripciones.Controllers
+@using ProyectoInscripciones.Models
+
+
+<h1>Consulta</h1>
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>AsignaturaId</th>
+            <th>Descripcion</th>
+            <th>Codigo</th>
+            <th>PreRequisito</th>
+            <th>Creditos</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var buscar in lista)
+        {
+        <tr>
+            <th>@buscar.AsignaturaId</th>
+            <th>@buscar.Descripcion</th>
+            <th>@buscar.Codigo</th>
+            <th>@buscar.PreRequisito</th>
+            <th>@buscar.Creditos</th>
+            <td><a class="btn btn-info" href="rasignatura/@buscar.AsignaturaId">Ver</a></td>
+
+        </tr>
+
+        }
+    </tbody>
+
+
+</table>
+
+@code {
+
+    public List<Asignaturas> lista { get; set; }
+    public ControllersAsignaturas controllers = new ControllersAsignaturas();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        lista = controllers.GetList(P => true);
+
+    }
+
+}

@@ -1,0 +1,52 @@
+﻿@page "/cinscripciones"
+@using ProyectoInscripciones.Controllers
+@using ProyectoInscripciones.Models
+
+
+<h1>Consulta</h1>
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>InscripcionesId</th>
+            <th>Fecha</th>
+            <th>EstudianteId</th>
+            <th>Monto</th>
+            <th>Balance</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var buscar in lista)
+        {
+        <tr>
+            <th>@buscar.InscripcionesId</th>
+            <th>@buscar.Fecha</th>
+            <th>@buscar.EstudianteId</th>
+            <th>@buscar.Monto</th>
+            <th>@buscar.Balance</th>
+            <td><a class="btn btn-info" href="rinscripciones/@buscar.InscripcionesId">Ver</a></td>
+        </tr>
+
+        }
+    </tbody>
+
+
+</table>
+
+@code {
+
+    public List<Inscripcion> lista { get; set; }
+    public ControllersInscripciones controllers = new ControllersInscripciones();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        lista = controllers.GetList(P => true);
+
+    }
+
+}
+

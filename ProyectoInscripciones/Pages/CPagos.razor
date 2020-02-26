@@ -1,0 +1,51 @@
+﻿@page "/cpagos"
+@using ProyectoInscripciones.Controllers
+@using ProyectoInscripciones.Models
+
+
+<h1>Consulta</h1>
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>PagosId</th>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>InscripcionId</th>
+          
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var buscar in lista)
+        {
+        <tr>
+            <th>@buscar.PagosId</th>
+            <th>@buscar.Fecha.ToString("dd/MM/yyyy")</th>
+            <th>@buscar.Monto</th>
+            <th>@buscar.InscripcionId</th>
+
+            <td><a class="btn btn-info" href="rpagos/@buscar.PagosId">Ver</a></td>
+        </tr>
+
+        }
+    </tbody>
+
+
+</table>
+
+@code {
+
+    public List<Pagos> lista { get; set; }
+    public ControllersPagos controllers = new ControllersPagos();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        lista = controllers.GetList(P => true);
+
+    }
+
+}

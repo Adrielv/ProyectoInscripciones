@@ -1,0 +1,153 @@
+﻿@page "/rpagos/{PagosId:int}"
+@using ProyectoInscripciones.Controllers
+@using ProyectoInscripciones.Models
+
+    <EditForm Model="@pagos" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <div class="container">
+
+            <label for="PagosId" class="col-md-2 col-form-label">InscripcionesId</label>
+            <input type="number" id="PagosId" class="col-md-2 form-check" @bind="pagos.PagosId" />
+            <ValidationMessage For="@(() => pagos.PagosId)" />
+            <br />
+
+            <button type="button" class="col-md-2 btn btn-info" @onclick="Buscar">Buscar</button>
+
+        </div>
+        <div class="container">
+
+            <label for="Fecha" class="col-md-2 col-form-label">Fecha</label>
+            <input type="date" id="Fecha" class="col-md-2 form-check" @bind="pagos.Fecha" />
+            <ValidationMessage For="@(() => pagos.Fecha)" />
+
+        </div>
+        <div class="container">
+
+            <label for="InscripcionId" class="col-md-2 col-form-label">InscripcionesId</label>
+            <input type="number" id="InscripcionId" class="col-md-2 form-check" @bind="pagos.InscripcionId" />
+            <ValidationMessage For="@(() => pagos.InscripcionId)" />
+
+        </div>
+        <div class="container">
+
+            <label for="Monto" class="col-md-2 col-form-label">Monto</label>
+            <input type="number" id="Monto" class="col-md-2 form-check" @bind="pagos.Monto" />
+            <ValidationMessage For="@(() => pagos.Monto)" />
+
+        </div>
+        <br />
+
+        <ValidationSummary />
+
+        <div class="form-group">
+
+            <button type="submit" class="col-md-2 btn btn-success">Guardar</button>
+            <button type="button" class="col-md-2 btn btn-primary" @onclick="Limpiar">Limpiar</button>
+            <button type="button" class="col-md-2 btn btn-danger" @onclick="Eliminar">Eliminar</button>
+
+
+        </div>
+
+        <h1>@Mensaje</h1>
+
+
+    </EditForm>
+
+
+
+@code {
+    private ControllersPagos controllers = new ControllersPagos();
+    private Pagos pagos = new Pagos();
+    public string Mensaje;
+    [Parameter] public int PagosId { get; set; }
+
+        protected override void OnInitialized()
+        {
+            pagos = new Pagos();
+
+		    if (PagosId != 0)
+		    {
+		        pagos.PagosId = PagosId;
+			    Buscar();
+		    }
+        }
+
+
+        private void Guardar()
+    {
+
+        if (pagos.PagosId == 0)
+        {
+            controllers.Guardar(pagos);
+            Mensaje = "Guardo";
+            Limpiar();
+        }
+        else
+        {
+            if (controllers.Buscar(pagos.PagosId) != null)
+            {
+                controllers.Modificar(pagos);
+                Mensaje = "Modifico";
+                Limpiar();
+            }
+
+        }
+
+
+
+    }
+    private void Limpiar()
+    {
+        pagos = new Pagos();
+
+    }
+    private void Eliminar()
+    {
+        if (pagos.PagosId != 0)
+        {
+            if (controllers.Buscar(pagos.PagosId) != null)
+            {
+
+                controllers.Eliminar(pagos.PagosId);
+                Mensaje = "Eliminado";
+                Limpiar();
+
+            }
+            else
+            {
+                Mensaje = "Id no existe";
+            }
+
+        }
+        else
+        {
+            Mensaje = "Selecione un ID";
+        }
+
+
+    }
+    private void Buscar()
+    {
+        if (pagos.PagosId != 0)
+        {
+            if (controllers.Buscar(pagos.PagosId) != null)
+            {
+
+                pagos = controllers.Buscar(pagos.PagosId);
+
+            }
+            else
+            {
+                Mensaje = "Id no existe";
+            }
+
+        }
+        else
+        {
+            Mensaje = "Selecione un ID";
+        }
+
+
+    }
+
+}

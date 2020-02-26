@@ -1,0 +1,153 @@
+﻿@page "/restudiante/{EstudianteId:int}"
+@using ProyectoInscripciones.Controllers
+@using ProyectoInscripciones.Models
+
+<EditForm Model="@estudiante" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="container">
+
+        <label for="EstudianteId" class="col-md-2 col-form-label">InscripcionesId</label>
+        <input type="number" id="EstudianteId" class="col-md-2 form-check" @bind="estudiante.EstudianteId" />
+        <ValidationMessage For="@(() => estudiante.EstudianteId)" />
+        <br />
+
+        <button type="button" class="col-md-2 btn btn-info" @onclick="Buscar">Buscar</button>
+
+    </div>
+    
+    <div class="container">
+
+        <label for="Nombre" class="col-md-2 col-form-label">Nombre</label>
+        <input type="text" id="Monto" class="col-md-2 form-check" @bind="estudiante.Nombre"  />
+        <ValidationMessage For="@(() => estudiante.Nombre)" />
+
+    </div>
+    <div class="container">
+
+        <label for="Tomados" class="col-md-2 col-form-label">Balance</label>
+        <input type="number" id="Tomados" class="col-md-2 form-check" @bind="estudiante.Balance" />
+        <ValidationMessage For="@(() => estudiante.Balance)" />
+
+    </div>
+    <div class="container">
+
+        <label for="Matricula" class="col-md-2 col-form-label">Matricula</label>
+        <input type="number" id="Matricula" class="col-md-2 form-check" @bind="estudiante.Matricula" />
+        <ValidationMessage For="@(() => estudiante.Matricula)" />
+
+    </div>
+    <br />
+
+    <ValidationSummary />
+
+    <div class="form-group">
+
+        <button type="submit" class="col-md-2 btn btn-success">Guardar</button>
+        <button type="button" class="col-md-2 btn btn-primary" @onclick="Limpiar">Limpiar</button>
+        <button type="button" class="col-md-2 btn btn-danger" @onclick="Eliminar">Eliminar</button>
+
+
+    </div>
+
+    <h1>@Mensaje</h1>
+
+
+</EditForm>
+
+
+
+@code {
+    private ControllersEstudiante controllers = new ControllersEstudiante();
+    private Estudiante estudiante = new Estudiante();
+    public string Mensaje;
+    [Parameter] public int EstudianteId { get; set; }
+
+        protected override void OnInitialized()
+        {
+            estudiante = new Estudiante();
+
+		    if (EstudianteId != 0)
+		    {
+		        estudiante.EstudianteId = EstudianteId;
+			    Buscar();
+		    }
+        }
+
+
+
+    private void Guardar()
+    {
+
+        if (estudiante.EstudianteId== 0)
+        {
+            controllers.Guardar(estudiante);
+            Mensaje = "Guardo";
+            Limpiar();
+        }
+        else
+        {
+            if (controllers.Buscar(estudiante.EstudianteId) != null)
+            {
+                controllers.Modificar(estudiante);
+                Mensaje = "Modifico";
+                Limpiar();
+            }
+
+        }
+    
+
+
+    }
+    private void Limpiar()
+    {
+        estudiante = new Estudiante();
+
+    }
+    private void Eliminar()
+    {
+        if(estudiante.EstudianteId != 0)
+        {
+            if(controllers.Buscar(estudiante.EstudianteId) != null)
+            {
+
+                controllers.Eliminar(estudiante.EstudianteId);
+                Mensaje = "Eliminado";
+                Limpiar();
+
+            }else
+            {
+                Mensaje = "Id no existe";
+            }
+
+        }else
+        {
+            Mensaje = "Selecione un ID";
+        }
+
+
+    }
+    private void Buscar()
+    {
+        if(estudiante.EstudianteId != 0)
+        {
+            if(controllers.Buscar(estudiante.EstudianteId) != null)
+            {
+
+                estudiante = controllers.Buscar(estudiante.EstudianteId);
+
+            }else
+            {
+                Mensaje = "Id no existe";
+            }
+
+        }else
+        {
+            Mensaje = "Selecione un ID";
+        }
+
+
+    }
+  
+
+
+}

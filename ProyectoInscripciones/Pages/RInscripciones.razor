@@ -1,0 +1,166 @@
+﻿@page "/rinscripciones/{InscripcionesId:int}"
+@using ProyectoInscripciones.Controllers
+@using ProyectoInscripciones.Models
+
+    <EditForm Model="@inscripciones" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+
+        <div class="container">
+
+            <label for="InscripcionesId" class="col-md-2 col-form-label">InscripcionesId</label>
+            <input type="number" id="InscripcionesId" class="col-md-2 form-check" @bind="inscripciones.InscripcionesId" />
+            <ValidationMessage For="@(() => inscripciones.InscripcionesId)" />
+
+            <br />
+
+            <button type="button" class="col-md-2 btn btn-info" @onclick="Buscar">Buscar</button>
+
+
+        </div>
+        <div class="container">
+
+            <label for="EstudianteId" class="col-md-2 col-form-label">EstudianteId</label>
+            <input type="number" id="EstudianteId" class="col-md-2 form-check" @bind="inscripciones.EstudianteId" />
+            <ValidationMessage For="@(() => inscripciones.EstudianteId)" />
+           
+        </div>
+        <div class="container">
+
+            <label for="Fecha" class="col-md-2 col-form-label">Fecha</label>
+            <input type="date" id="Fecha" class="col-md-2 form-check" @bind="inscripciones.Fecha" />
+            <ValidationMessage For="@(() => inscripciones.Fecha)" />
+
+        </div>
+        <div class="container">
+
+            <label for="Monto" class="col-md-2 col-form-label">Monto</label>
+            <input type="number" id="Monto" class="col-md-2 form-check" @bind="inscripciones.Monto" />
+            <ValidationMessage For="@(() => inscripciones.Monto)" />
+
+        </div>
+        <div class="container">
+
+            <label for="Balance" class="col-md-2 col-form-label">Balance</label>
+            <input type="number" id="Balance" class="col-md-2 form-check" @bind="inscripciones.Balance" />
+            <ValidationMessage For="@(() => inscripciones.Balance)" />
+
+        </div>
+
+        <br />
+
+        <ValidationSummary />
+
+        <div class="form-group">
+
+            <button type="submit" class="col-md-2 btn btn-success">Guardar</button>
+            <button type="button" class="col-md-2 btn btn-primary" @onclick="Limpiar">Limpiar</button>
+            <button type="button" class="col-md-2 btn btn-danger" @onclick="Eliminar">Eliminar</button>
+
+
+        </div>
+
+        <h1>@Mensaje</h1>
+
+
+    </EditForm>
+
+
+
+@code {
+    private ControllersInscripciones controllers = new ControllersInscripciones();
+    private Inscripcion inscripciones = new Inscripcion();
+    public string Mensaje;
+
+    [Parameter] public int InscripcionesId { get; set; }
+
+      protected override void OnInitialized()
+        {
+            inscripciones = new Inscripcion();
+
+		    if (InscripcionesId != 0)
+		    {
+		        inscripciones.InscripcionesId = InscripcionesId;
+			    Buscar();
+		    }
+        }
+
+
+    private void Guardar()
+    {
+
+        if (inscripciones.InscripcionesId == 0)
+        {
+            controllers.Guardar(inscripciones);
+            Mensaje = "Guardo";
+            Limpiar();
+        }
+        else
+        {
+            if (controllers.Buscar(inscripciones.InscripcionesId) != null)
+            {
+                controllers.Modificar(inscripciones);
+                Mensaje = "Modifico";
+                Limpiar();
+            }
+
+        }
+    
+
+
+    }
+    private void Limpiar()
+    {
+        inscripciones = new Inscripcion();
+
+    }
+    private void Eliminar()
+    {
+        if(inscripciones.InscripcionesId != 0)
+        {
+            if(controllers.Buscar(inscripciones.InscripcionesId) != null)
+            {
+
+                controllers.Eliminar(inscripciones.InscripcionesId);
+                Mensaje = "Eliminado";
+                Limpiar();
+
+            }else
+            {
+                Mensaje = "Id no existe";
+            }
+
+        }else
+        {
+            Mensaje = "Selecione un ID";
+        }
+        
+
+    }
+
+
+    private void Buscar()
+    {
+        if(inscripciones.InscripcionesId != 0)
+        {
+            if(controllers.Buscar(inscripciones.InscripcionesId) != null)
+            {
+
+                inscripciones = controllers.Buscar(inscripciones.InscripcionesId);
+
+            }else
+            {
+                Mensaje = "Id no existe";
+            }
+
+        }else
+        {
+            Mensaje = "Selecione un ID";
+        }
+
+
+    }
+  
+
+
+}
+

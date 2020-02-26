@@ -1,0 +1,49 @@
+﻿@page "/cestudiante"
+@using ProyectoInscripciones.Controllers
+@using ProyectoInscripciones.Models
+
+
+<h1>Consulta</h1>
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>EstudianteId</th>
+            <th>Nombre</th>
+            <th>Matricula</th>
+            <th>Balance</th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var estudiante in lista)
+        {
+            <tr>
+                <th>@estudiante.EstudianteId</th>
+                <th>@estudiante.Nombre</th>
+                <th>@estudiante.Matricula</th>
+                <th>@estudiante.Balance</th>
+                <td><a class="btn btn-info" href="restudiante/@estudiante.EstudianteId">Ver</a></td>
+            </tr>
+
+        }
+    </tbody>
+
+
+</table>
+
+@code {
+
+     public List<Estudiante> lista { get; set; }
+   public ControllersEstudiante controllers = new ControllersEstudiante();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        lista = controllers.GetList(P => true);
+
+    }
+
+}

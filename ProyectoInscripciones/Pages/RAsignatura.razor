@@ -1,0 +1,171 @@
+﻿@page "/rasignatura/{AsignaturaId:int}"
+@using ProyectoInscripciones.Controllers
+@using ProyectoInscripciones.Models
+
+    <EditForm Model="@asignaturas" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+
+        <div class="container">
+
+            <label for="AsignaturaId" class="col-md-2 col-form-label">AsignaturaId</label>
+            <input type="number" id="AsignaturaId" class="col-md-2 form-check" @bind="asignaturas.AsignaturaId" />
+            <ValidationMessage For="@(() => asignaturas.AsignaturaId)" />
+
+            <br />
+
+            <button type="button" class="col-md-2 btn btn-info" @onclick="Buscar">Buscar</button>
+
+
+        </div>
+        <div class="container">
+
+            <label for="Descripcion" class="col-md-2 col-form-label">DescripcionId</label>
+            <input type="text" id="Descripcion" class="col-md-2 form-check" @bind="asignaturas.Descripcion" />
+            <ValidationMessage For="@(() => asignaturas.Descripcion)" />
+
+        </div>
+
+        <div class="container">
+
+            <label for="Codigo" class="col-md-2 col-form-label">Codigo</label>
+            <input type="number" id="Codigo" class="col-md-2 form-check" @bind="asignaturas.Codigo" />
+            <ValidationMessage For="@(() => asignaturas.Codigo)" />
+
+        </div>
+        <div class="container">
+
+            <label for="PreRequisito" class="col-md-2 col-form-label">PreRequisito</label>
+            <input type="number" id="PreRequisito" class="col-md-2 form-check" @bind="asignaturas.PreRequisito" />
+            <ValidationMessage For="@(() => asignaturas.PreRequisito)" />
+
+        </div>
+        <div class="container">
+
+            <label for="Creditos" class="col-md-2 col-form-label">Creditos</label>
+            <input type="number" id="Creditos" class="col-md-2 form-check" @bind="asignaturas.Creditos" />
+            <ValidationMessage For="@(() => asignaturas.Creditos)" />
+
+        </div>
+
+        <br />
+
+        <ValidationSummary />
+
+        <div class="form-group">
+
+            <button type="submit" class="col-md-2 btn btn-success">Guardar</button>
+            <button type="button" class="col-md-2 btn btn-primary" @onclick="Limpiar">Limpiar</button>
+            <button type="button" class="col-md-2 btn btn-danger" @onclick="Eliminar">Eliminar</button>
+
+
+        </div>
+
+        <h1>@Mensaje</h1>
+
+
+    </EditForm>
+
+
+
+@code {
+    private ControllersAsignaturas controllers = new ControllersAsignaturas();
+    private Asignaturas asignaturas = new Asignaturas();
+    public string Mensaje;
+    [Parameter] public int AsignaturaId { get; set; }
+
+        protected override void OnInitialized()
+        {
+            asignaturas = new Asignaturas();
+
+		    if (AsignaturaId != 0)
+		    {
+		       asignaturas.AsignaturaId = AsignaturaId;
+			    Buscar();
+		    }
+        }
+
+
+
+    private void Guardar()
+    {
+
+        if (asignaturas.AsignaturaId == 0)
+        {
+            controllers.Guardar(asignaturas);
+            Mensaje = "Guardo";
+            Limpiar();
+        }
+        else
+        {
+            if (controllers.Buscar(asignaturas.AsignaturaId) != null)
+            {
+                controllers.Modificar(asignaturas);
+                Mensaje = "Modifico";
+                Limpiar();
+            }
+
+        }
+
+
+
+    }
+    private void Limpiar()
+    {
+        asignaturas = new Asignaturas();
+
+    }
+    private void Eliminar()
+    {
+        if (asignaturas.AsignaturaId != 0)
+        {
+            if (controllers.Buscar(asignaturas.AsignaturaId) != null)
+            {
+
+                controllers.Eliminar(asignaturas.AsignaturaId);
+                Mensaje = "Eliminado";
+                Limpiar();
+
+            }
+            else
+            {
+                Mensaje = "Id no existe";
+            }
+
+        }
+        else
+        {
+            Mensaje = "Selecione un ID";
+        }
+
+
+    }
+
+
+    private void Buscar()
+    {
+        if (asignaturas.AsignaturaId != 0)
+        {
+            if (controllers.Buscar(asignaturas.AsignaturaId) != null)
+            {
+
+                asignaturas = controllers.Buscar(asignaturas.AsignaturaId);
+
+            }
+            else
+            {
+                Mensaje = "Id no existe";
+            }
+
+        }
+        else
+        {
+            Mensaje = "Selecione un ID";
+        }
+
+
+    }
+
+
+
+}
+
