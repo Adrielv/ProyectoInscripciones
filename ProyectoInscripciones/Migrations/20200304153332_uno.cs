@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ProyectoInscripciones.Migrations
 {
-    public partial class nuevo : Migration
+    public partial class uno : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -61,13 +61,41 @@ namespace ProyectoInscripciones.Migrations
                     PagosId = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Fecha = table.Column<DateTime>(nullable: false),
-                    InscripcionId = table.Column<int>(nullable: false),
+                    EstudianteId = table.Column<int>(nullable: false),
                     Monto = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Pagos", x => x.PagosId);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "InscripcionDetalles",
+                columns: table => new
+                {
+                    InscripcionDetalleId = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    InscripcionesId = table.Column<int>(nullable: false),
+                    AsignaturaId = table.Column<int>(nullable: false),
+                    Descripcion = table.Column<string>(nullable: true),
+                    Creditos = table.Column<int>(nullable: false),
+                    Subtotal = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InscripcionDetalles", x => x.InscripcionDetalleId);
+                    table.ForeignKey(
+                        name: "FK_InscripcionDetalles_Inscripcions_InscripcionesId",
+                        column: x => x.InscripcionesId,
+                        principalTable: "Inscripcions",
+                        principalColumn: "InscripcionesId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InscripcionDetalles_InscripcionesId",
+                table: "InscripcionDetalles",
+                column: "InscripcionesId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -79,10 +107,13 @@ namespace ProyectoInscripciones.Migrations
                 name: "Estudiante");
 
             migrationBuilder.DropTable(
-                name: "Inscripcions");
+                name: "InscripcionDetalles");
 
             migrationBuilder.DropTable(
                 name: "Pagos");
+
+            migrationBuilder.DropTable(
+                name: "Inscripcions");
         }
     }
 }

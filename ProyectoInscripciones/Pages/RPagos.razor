@@ -25,12 +25,18 @@
             <label>Estudiante</label>
             <div class="col-md-2 ">
                 <InputSelect @bind-Value="@EstudianteSeleccionado" class="form-control " @onchange="CargarEstudiante" @onclick="CargarEstudiante">
-
-                    @foreach (var item in listaEstudiante)
+                    @if (listaEstudiante.Count == 0)
                     {
-                        <option value="@item.EstudianteId">@item.Nombre</option>
+                        <option value="-1">No hay Estudiante</option>
                     }
-                </InputSelect>
+                    else
+                    {
+                        @foreach (var item in listaEstudiante)
+                        {
+                            <option value="@item.EstudianteId">@item.Nombre</option>
+                        }
+                    }
+                    </InputSelect>
             </div>
         </div>
         <div class="container">

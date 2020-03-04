@@ -9,8 +9,8 @@ using ProyectoInscripciones.Data;
 namespace ProyectoInscripciones.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20200304021708_segunda")]
-    partial class segunda
+    [Migration("20200304153332_uno")]
+    partial class uno
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -119,11 +119,11 @@ namespace ProyectoInscripciones.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("EstudianteId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("InscripcionId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Monto")
                         .HasColumnType("TEXT");

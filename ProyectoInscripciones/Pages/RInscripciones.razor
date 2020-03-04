@@ -21,12 +21,19 @@
             <label>Estudiante</label>
             <div class="col-md-2 ">
                 <InputSelect @bind-Value="@EstudianteSeleccionado" class="form-control " @onchange="CargarEstudiante" @onclick="CargarEstudiante">
-
-                    @foreach (var item in listaEstudiante)
+                    @if (listaEstudiante.Count == 0)
                     {
-                        <option value="@item.EstudianteId">@item.Nombre</option>
+                        <option value="-1">No hay Estudiante</option>
                     }
-                </InputSelect>
+                    else
+                    {
+                        @foreach (var item in listaEstudiante)
+                        {
+                            <option value="@item.EstudianteId">@item.Nombre</option>
+                        }
+                    }
+                    </InputSelect>
+                    
             </div>
 
 
@@ -41,7 +48,7 @@
         <div class="container">
 
             <label for="Monto" class="col-md-2 col-form-label">Monto</label>
-            <input type="number" id="Monto" class="col-md-2 form-check" @bind="inscripciones.Monto" />
+            <input type="number" id="Monto" class="col-md-2 form-check" @bind="inscripciones.Monto" readonly="readonly" />
             <ValidationMessage For="@(() => inscripciones.Monto)" />
 
         </div>
@@ -60,16 +67,14 @@
 
                     @if (listaAsignatura.Count == 0)
                     {
-                        <option value="">No hay Asigntura Agregada</option>
+                        <option value="-1">No hay Asignatura</option>
                     }
                     else
-                    {                       
-
+                    {
                         @foreach (var item in listaAsignatura)
                         {
                             <option value="@item.AsignaturaId">@item.Descripcion</option>
                         }
-
                     }
                 </InputSelect>
             </div>
@@ -228,12 +233,14 @@
 
     private void Buscar()
     {
+        
         if(inscripciones.InscripcionesId != 0)
         {
             if(controllers.Buscar(inscripciones.InscripcionesId) != null)
             {
 
                 inscripciones = controllers.Buscar(inscripciones.InscripcionesId);
+                EstudianteSeleccionado = Convert.ToString(inscripciones.EstudianteId);
 
             }else
             {

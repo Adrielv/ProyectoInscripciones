@@ -17,10 +17,10 @@ namespace ProyectoInscripciones.Models
         [Required(ErrorMessage = "No puede estar vacio")]
         [Range(minimum: 1, maximum: 10000, ErrorMessage = "No puede pasar el limite")]
         public decimal Matricula { get; set; }
-
-        public string Nombre { get; set; }
         [Required(ErrorMessage = "No puede estar vacio")]
-        [Range(minimum: 1, maximum: 10000, ErrorMessage = "No puede pasar el limite")]
+        public string Nombre { get; set; }
+       
+
         public decimal Balance { get; set; }
 
         public Estudiante()
