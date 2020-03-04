@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,6 +22,9 @@ namespace ProyectoInscripciones.Models
         [Range(minimum: 1, maximum: 10000, ErrorMessage = "No puede pasar el limite")]
         public decimal Balance { get; set; }
 
+        [ForeignKey("InscripcionesId")]
+        public List<InscripcionDetalle> Detalles { get; set; }
+
         public Inscripcion()
         {
             InscripcionesId = 0;
@@ -28,6 +32,7 @@ namespace ProyectoInscripciones.Models
             Fecha = DateTime.Now;
             Monto = 0;
             Balance = 0;
+            Detalles = new List<InscripcionDetalle>();
         }
 
     }

@@ -22,11 +22,16 @@
 
         </div>
         <div class="container">
+            <label>Estudiante</label>
+            <div class="col-md-2 ">
+                <InputSelect @bind-Value="@EstudianteSeleccionado" class="form-control " @onchange="CargarEstudiante" @onclick="CargarEstudiante">
 
-            <label for="InscripcionId" class="col-md-2 col-form-label">InscripcionesId</label>
-            <input type="number" id="InscripcionId" class="col-md-2 form-check" @bind="pagos.InscripcionId" />
-            <ValidationMessage For="@(() => pagos.InscripcionId)" />
-
+                    @foreach (var item in listaEstudiante)
+                    {
+                        <option value="@item.EstudianteId">@item.Nombre</option>
+                    }
+                </InputSelect>
+            </div>
         </div>
         <div class="container">
 
@@ -61,9 +66,15 @@
     public string Mensaje;
     [Parameter] public int PagosId { get; set; }
 
+     private string EstudianteSeleccionado { get; set; }
+     private Estudiante Estudiante { get; set; }
+     private List<Estudiante> listaEstudiante = new List<Estudiante>();
+     private ControllersEstudiante controllersEstudiante = new ControllersEstudiante();
+
         protected override void OnInitialized()
         {
             pagos = new Pagos();
+            listaEstudiante = controllersEstudiante.GetList(e => true);
 
 		    if (PagosId != 0)
 		    {
@@ -74,7 +85,8 @@
 
 
         private void Guardar()
-    {
+        {
+        pagos.EstudianteId = Convert.ToInt32(EstudianteSeleccionado);
 
         if (pagos.PagosId == 0)
         {
@@ -149,5 +161,15 @@
 
 
     }
-
+    private void CargarEstudiante()
+    {
+        try
+        {
+            Estudiante = controllersEstudiante.Buscar(Convert.ToInt32(EstudianteSeleccionado));
+        }
+        catch (Exception)
+        {
+            Mensaje = "Error al cargar estudiante";
+        }
+    }
 }

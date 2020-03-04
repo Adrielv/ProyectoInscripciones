@@ -18,6 +18,8 @@ namespace ProyectoInscripciones.Controllers
 
             try
             {
+                contexto.Estudiante.Find(pagos.EstudianteId).Balance -= pagos.Monto;
+
                 contexto.Pagos.Add(pagos);
                 paso = contexto.SaveChanges() > 0;
             }

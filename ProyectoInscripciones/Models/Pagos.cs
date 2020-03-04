@@ -14,7 +14,7 @@ namespace ProyectoInscripciones.Models
 
         public DateTime Fecha { get; set; }
 
-        public int InscripcionId { get; set; }
+        public int EstudianteId { get; set; }
 
         [Required(ErrorMessage = "No puede estar vacio")]
         [Range(minimum: 1, maximum: 10000, ErrorMessage = "No puede pasar el limite")]
@@ -24,7 +24,7 @@ namespace ProyectoInscripciones.Models
         {
             PagosId = 0;
             Fecha = DateTime.Now;
-            InscripcionId = 0;
+            EstudianteId = 0;
             Monto = 0;
         }
     }

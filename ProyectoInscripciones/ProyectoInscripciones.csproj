@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200304030134_tres.cs" />
+    <Compile Remove="Migrations\20200304030134_tres.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Database\" />
   </ItemGroup>
 

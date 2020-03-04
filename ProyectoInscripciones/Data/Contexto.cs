@@ -13,6 +13,7 @@ namespace ProyectoInscripciones.Data
         public DbSet<Asignaturas> Asignaturas { get; set; }
         public DbSet<Inscripcion> Inscripcions { get; set; }
         public DbSet<Pagos> Pagos { get; set; }
+        public DbSet<InscripcionDetalle> InscripcionDetalles { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

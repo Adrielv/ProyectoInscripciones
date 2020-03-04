@@ -15,9 +15,14 @@ namespace ProyectoInscripciones.Controllers
         {
             bool paso = false;
             Contexto contexto = new Contexto();
+            ControllersEstudiante controllersEstudiante = new ControllersEstudiante();
 
             try
             {
+                var estudiante = controllersEstudiante.Buscar(inscripciones.EstudianteId);
+                estudiante.Balance += inscripciones.Monto;
+
+                controllersEstudiante.Modificar(estudiante);
                 contexto.Inscripcions.Add(inscripciones);
                 paso = contexto.SaveChanges() > 0;
             }
@@ -33,10 +38,42 @@ namespace ProyectoInscripciones.Controllers
         {
             bool paso = false;
             Contexto contexto = new Contexto();
+            ControllersEstudiante controllersEstudiante = new ControllersEstudiante();
+            ControllersInscripciones controllersInscripciones = new ControllersInscripciones();
 
             try
             {
+                var estudiante = controllersEstudiante.Buscar(inscripciones.EstudianteId);
+                var anterior = Buscar(inscripciones.InscripcionesId);
+
+                estudiante.Balance -= anterior.Monto;
+                contexto.Inscripcions.Add(inscripciones);
+
+                foreach (var item in anterior.Detalles)
+                {
+                    if (!inscripciones.Detalles.Any(p => p.InscripcionDetalleId == item.InscripcionDetalleId))
+                    {
+                        contexto.Entry(item).State = EntityState.Deleted;
+                    }
+                }
+
+                foreach (var item in inscripciones.Detalles)
+                {
+                    if (item.InscripcionDetalleId == 0)
+                    {
+                        contexto.Entry(item).State = EntityState.Added;
+                    }
+                    else
+                    {
+                        contexto.Entry(item).State = EntityState.Modified;
+                    }
+                }
+
+                estudiante.Balance += inscripciones.Monto;
+                controllersEstudiante.Modificar(estudiante);
+
                 contexto.Entry(inscripciones).State = EntityState.Modified;
+
                 paso = contexto.SaveChanges() > 0;
             }
             catch (Exception)
@@ -51,10 +88,15 @@ namespace ProyectoInscripciones.Controllers
         {
             Inscripcion inscripciones = new Inscripcion();
             Contexto contexto = new Contexto();
+            ControllerInscripcionDetalle controller = new ControllerInscripcionDetalle();
 
             try
             {
                 inscripciones = contexto.Inscripcions.Find(id);
+                if (inscripciones != null)
+                {
+                    inscripciones.Detalles = controller.GetInscripcions(A => true);
+                }
             }
             catch (Exception)
             {
@@ -73,7 +115,10 @@ namespace ProyectoInscripciones.Controllers
 
             try
             {
-                var eliminar = contexto.Estudiante.Find(id);
+                var eliminar = contexto.Inscripcions.Find(id);
+                contexto.Estudiante.Find(eliminar.EstudianteId).Balance -= eliminar.Monto;
+
+                
                 contexto.Entry(eliminar).State = EntityState.Deleted;
                 paso = contexto.SaveChanges() > 0;
             }

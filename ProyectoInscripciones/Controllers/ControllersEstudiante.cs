@@ -47,7 +47,7 @@ namespace ProyectoInscripciones.Controllers
             return paso;
 
         }
-        public Estudiante Buscar(int id)
+        public  Estudiante Buscar(int id)
         {
             Estudiante estudiantes = new Estudiante();
             Contexto contexto = new Contexto();

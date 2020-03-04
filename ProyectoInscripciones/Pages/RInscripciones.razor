@@ -18,11 +18,18 @@
 
         </div>
         <div class="container">
+            <label>Estudiante</label>
+            <div class="col-md-2 ">
+                <InputSelect @bind-Value="@EstudianteSeleccionado" class="form-control " @onchange="CargarEstudiante" @onclick="CargarEstudiante">
 
-            <label for="EstudianteId" class="col-md-2 col-form-label">EstudianteId</label>
-            <input type="number" id="EstudianteId" class="col-md-2 form-check" @bind="inscripciones.EstudianteId" />
-            <ValidationMessage For="@(() => inscripciones.EstudianteId)" />
-           
+                    @foreach (var item in listaEstudiante)
+                    {
+                        <option value="@item.EstudianteId">@item.Nombre</option>
+                    }
+                </InputSelect>
+            </div>
+
+
         </div>
         <div class="container">
 
@@ -44,6 +51,64 @@
             <input type="number" id="Balance" class="col-md-2 form-check" @bind="inscripciones.Balance" />
             <ValidationMessage For="@(() => inscripciones.Balance)" />
 
+        </div>
+
+        <div class="container">
+            <label for="Asignatura">Asignatura</label>
+            <div class="col-md-2 ">
+                <InputSelect @bind-Value="@AsignaturaSelecionada" class="form-control" @onchange="CargarAsignatura" @onclick="CargarAsignatura">
+
+                    @if (listaAsignatura.Count == 0)
+                    {
+                        <option value="">No hay Asigntura Agregada</option>
+                    }
+                    else
+                    {                       
+
+                        @foreach (var item in listaAsignatura)
+                        {
+                            <option value="@item.AsignaturaId">@item.Descripcion</option>
+                        }
+
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <br/>
+        <div class="container">
+
+            <button type="button" class="btn btn-primary" @onclick="AgregarAsignatura">Agregar</button>
+        </div>
+        <div>
+            <table class="table">
+                <thead>
+
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Descripcion</th>
+                        <th scope="col">Creditos</th>
+                        <th scope="col">SubTotal</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    @foreach (var asignatura in inscripciones.Detalles)
+                    {
+                        <tr>
+
+
+                            <td scope="row">@asignatura.AsignaturaId</td>
+                            <td>@asignatura.Descripcion</td>
+                            <td>@asignatura.Creditos</td>
+                            <td>@asignatura.Subtotal </td>
+
+
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
         </div>
 
         <br />
@@ -68,25 +133,48 @@
 
 @code {
     private ControllersInscripciones controllers = new ControllersInscripciones();
+    private ControllersAsignaturas controllersAsignaturas = new ControllersAsignaturas();
+    private ControllersEstudiante controllersEstudiante = new ControllersEstudiante();
     private Inscripcion inscripciones = new Inscripcion();
     public string Mensaje;
 
     [Parameter] public int InscripcionesId { get; set; }
 
-      protected override void OnInitialized()
-        {
-            inscripciones = new Inscripcion();
+    private string EstudianteSeleccionado { get; set; }
+    private string AsignaturaSelecionada { get; set; }
+    private List<Estudiante> listaEstudiante = new List<Estudiante>();
+    private List<Asignaturas> listaAsignatura = new List<Asignaturas>();
 
-		    if (InscripcionesId != 0)
-		    {
-		        inscripciones.InscripcionesId = InscripcionesId;
-			    Buscar();
-		    }
+
+    private Asignaturas Asignatura { get; set; }
+    private Estudiante Estudiante { get; set; }
+
+    private int Precio = 500;
+    private int credito = 0;
+
+
+    protected override void OnInitialized()
+    {
+        listaEstudiante = controllersEstudiante.GetList(e => true);
+        listaAsignatura = controllersAsignaturas.GetList(e => true);
+
+
+        inscripciones = new Inscripcion();
+        Asignatura = new Asignaturas();
+        Estudiante = new Estudiante();
+
+        if (InscripcionesId != 0)
+        {
+            inscripciones.InscripcionesId = InscripcionesId;
+            Buscar();
         }
+    }
 
 
     private void Guardar()
     {
+
+        inscripciones.EstudianteId = Convert.ToInt32(EstudianteSeleccionado);
 
         if (inscripciones.InscripcionesId == 0)
         {
@@ -104,7 +192,7 @@
             }
 
         }
-    
+
 
 
     }
@@ -133,7 +221,7 @@
         {
             Mensaje = "Selecione un ID";
         }
-        
+
 
     }
 
@@ -159,8 +247,69 @@
 
 
     }
-  
+    private void CargarEstudiante()
+    {
+        try
+        {
+            Estudiante = controllersEstudiante.Buscar(Convert.ToInt32(EstudianteSeleccionado));
+        }
+        catch (Exception)
+        {
+            Mensaje = "Error al cargar estudiante";
+        }
+    }
+    private void CargarAsignatura()
+    {
+        try
+        {
+            Asignatura = controllersAsignaturas.Buscar(Convert.ToInt32(AsignaturaSelecionada));
+        }
+        catch (Exception)
+        {
+            Mensaje = "Error al cargar Asignatura";
+        }
+    }
 
+    private void AgregarAsignatura()
+    {
 
+        if (AsignaturaSelecionada == null)
+        {
+            Mensaje = "debe seleccionar una asignatura";
+        }
+
+        else
+        {
+            if (inscripciones.Detalles.Any(i => i.AsignaturaId == Asignatura.AsignaturaId))
+            {
+                Mensaje = "Esta Asignatura ya esta agregada";
+            }
+            else
+            {
+
+                inscripciones.Detalles.Add(new InscripcionDetalle()
+                {
+                    InscripcionesId = inscripciones.InscripcionesId,
+                    AsignaturaId = Asignatura.AsignaturaId,
+                    Descripcion = Asignatura.Descripcion,
+                    Creditos = Convert.ToInt32(Asignatura.Creditos),
+                    Subtotal = (Convert.ToInt32(Asignatura.Creditos) * Precio)
+                });
+                Asignatura = new Asignaturas();
+
+                int total = 0;
+
+                foreach (var item in inscripciones.Detalles)
+                {
+                    total += item.Subtotal;
+                    credito += item.Creditos;
+                }
+
+                inscripciones.Monto = total;
+                //inscripciones.Tomado = credito;
+            }
+
+        }
+    }
 }
 
